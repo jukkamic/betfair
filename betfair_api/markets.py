@@ -48,7 +48,7 @@ def find_football_event(session_token, api_key, team_a, team_b):
         "filter": {
             "eventTypeIds": ["1"],  # 1 is the ID for Soccer
             "marketCountries": ["DE"], # Germany
-            "textQuery": f"{team_a} v {team_b}",
+            "textQuery": f"{team_a}*{team_b}",
             "marketStartTime": {
                 "from": (datetime.datetime.utcnow()).strftime("%Y-%m-%dT%H:%M:%SZ")
             }
