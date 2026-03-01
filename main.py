@@ -13,16 +13,28 @@ import betfair_api.markets as markets
 try:
     from config_secrets import BETFAIR_USERNAME, BETFAIR_PASSWORD, BETFAIR_API_KEY
 except ImportError:
-    print("Error: A config_secrets.py file with your Betfair credentials is required.")
-    print("Please create a 'config_secrets.py' file with the following variables:")
-    print("BETFAIR_USERNAME = 'your_username'")
-    print("BETFAIR_PASSWORD = 'your_password'")
-    print("BETFAIR_API_KEY = 'your_api_key'")
-    sys.exit(1)
+    # Handle missing secrets gracefully for the web app context if possible, 
+    # or just let it fail if credentials are strictly required at startup.
+    # For now, we will print a warning but not exit immediately to allow app.py to import this file if needed,
+    # though actual API calls will fail.
+    print("Warning: config_secrets.py not found. API calls will fail.")
+    BETFAIR_USERNAME = None
+    BETFAIR_PASSWORD = None
+    BETFAIR_API_KEY = None
+
+def get_session():
+    if not BETFAIR_USERNAME:
+        return None
+    return login.login(BETFAIR_USERNAME, BETFAIR_PASSWORD, BETFAIR_API_KEY, config.CERT_PATH + "/client-2048.crt", config.CERT_PATH + "/client-2048.key")
 
 if __name__ == "__main__":
+    if not BETFAIR_USERNAME:
+        print("Error: A config_secrets.py file with your Betfair credentials is required.")
+        sys.exit(1)
+        
     # 1. Login to get a session token
-    session_token = login.login(BETFAIR_USERNAME, BETFAIR_PASSWORD, BETFAIR_API_KEY, config.CERT_PATH + "/client-2048.crt", config.CERT_PATH + "/client-2048.key")
+    session_token = get_session()
+
     
     if session_token:
         # 2. Find the event

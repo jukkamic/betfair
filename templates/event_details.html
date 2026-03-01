@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Event Details - Betfair UI</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="/">Betfair UI</a>
+      </div>
+    </nav>
+
+    <div class="container mt-4">
+      <a href="/" class="btn btn-outline-secondary mb-3">&larr; Back to Search</a>
+      
+      {% if market %}
+        <h1>{{ market.market_name }}</h1>
+        <p>Event ID: {{ event_id }}</p>
+        
+        <div class="row">
+          {% for book in market.odds %}
+            {% for runner in book.runners %}
+              {% set runner_name = market.runners.get(runner.selectionId, 'Unknown Runner') %}
+              
+              <div class="col-md-6 mb-4">
+                <div class="card">
+                  <div class="card-header">
+                    <h5 class="mb-0">{{ runner_name }}</h5>
+                  </div>
+                  <div class="card-body">
+                    <div class="row text-center">
+                      <div class="col-6">
+                        <h6 class="text-primary">Back</h6>
+                        {% if runner.ex.availableToBack %}
+                          <span class="badge bg-primary fs-5">{{ runner.ex.availableToBack[0].price }}</span>
+                          <br><small>Size: {{ runner.ex.availableToBack[0].size }}</small>
+                        {% else %}
+                          <span class="text-muted">N/A</span>
+                        {% endif %}
+                      </div>
+                      <div class="col-6">
+                        <h6 class="text-danger">Lay</h6>
+                        {% if runner.ex.availableToLay %}
+                          <span class="badge bg-danger fs-5">{{ runner.ex.availableToLay[0].price }}</span>
+                          <br><small>Size: {{ runner.ex.availableToLay[0].size }}</small>
+                        {% else %}
+                          <span class="text-muted">N/A</span>
+                        {% endif %}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="alert alert-warning">No market data available for this event.</div>
+      {% endif %}
+    </div>
+  </body>
+</html>
