@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for
+from flask import Blueprint, render_template, request, redirect, url_for, session
 from flask_login import login_required, current_user
 import main
 import betfair_api.markets as markets
@@ -24,19 +24,27 @@ if EVENT_TYPES and 'result' in EVENT_TYPES[0]:
 def index():
     search_results = []
     
+    # Get the current event type from session, default to "1" (Soccer)
+    current_event_type_id = session.get('selected_event_type_id', "1")
+
     if request.method == 'POST':
         search_term = request.form.get('search_term')
-        event_type_id = request.form.get('event_type_id', "1") # Default to Soccer (1)
+        event_type_id = request.form.get('event_type_id')
+        
+        # Update session if a new type is selected
+        if event_type_id:
+            current_event_type_id = event_type_id
+            session['selected_event_type_id'] = current_event_type_id
         
         if search_term:
             session_token = main.get_session()
             if session_token:
                 try:
-                    search_results = markets.find_events(session_token, main.BETFAIR_API_KEY, search_term, event_type_id)
+                    search_results = markets.find_events(session_token, main.BETFAIR_API_KEY, search_term, current_event_type_id)
                 except Exception as e:
                     print(f"Error searching events: {e}")
                     
-    return render_template('index.html', name=current_user.name, results=search_results, event_types=PROCESSED_EVENT_TYPES)
+    return render_template('index.html', name=current_user.name, results=search_results, event_types=PROCESSED_EVENT_TYPES, current_event_type_id=current_event_type_id)
 
 @main_bp.route('/event/<event_id>')
 @login_required

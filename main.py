@@ -84,7 +84,7 @@ if __name__ == "__main__":
     if session_token:
         # 2. Find the event
         team_name = input("Enter team name to search: ")
-        events = markets.find_football_events(session_token, BETFAIR_API_KEY, team_name)
+        events = markets.find_football_events(session_token, BETFAIR_API_KEY, team_name) # type: ignore
         
         if events:
             print(f"\nFound {len(events)} events:")

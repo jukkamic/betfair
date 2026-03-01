@@ -1,69 +1,76 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Betfair UI</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-  </head>
-  <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <div class="container-fluid">
-        <a class="navbar-brand" href="#">Betfair UI</a>
-        <div class="d-flex">
-                    <span class="navbar-text me-3">
-            Welcome, {{ name }}
-          </span>
 
-          <a href="/logout" class="btn btn-outline-primary">Logout</a>
-        </div>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Betfair UI</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">Betfair UI</a>
+      <div class="d-flex">
+        <span class="navbar-text me-3">
+          Welcome, {{ name }}
+        </span>
+
+        <a href="/logout" class="btn btn-outline-primary">Logout</a>
       </div>
-    </nav>
-
-    <div class="container mt-4">
-            <h1>Betfair API Interaction</h1>
-      <p>Here you will be able to interact with the Betfair API.</p>
-      
-            <form method="POST" action="/" class="mb-4">
-        <div class="input-group">
-                    <select class="form-select" name="event_type_id" style="max-width: 200px;">
-            {% for type in event_types %}
-              <option value="{{ type.id }}" {% if type.id == "1" %}selected{% endif %}>{{ type.name }}</option>
-            {% endfor %}
-          </select>
-          <input type="text" class="form-control" name="search_term" placeholder="Enter team/player name (e.g., Arsenal)" required>
-          <button class="btn btn-primary" type="submit">Search</button>
-
-        </div>
-      </form>
-
-
-            {% if results %}
-        <h2>Search Results</h2>
-        <table class="table table-striped table-hover">
-          <thead>
-            <tr>
-              <th>Event Name</th>
-              <th>Date</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for event in results %}
-              <tr>
-                <td>{{ event.event.name }}</td>
-                <td>{{ event.event.openDate }}</td>
-                <td>
-                  <a href="/event/{{ event.event.id }}" class="btn btn-sm btn-info">View Details</a>
-                </td>
-              </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      {% elif request.method == 'POST' and not results %}
-        <div class="alert alert-warning">No events found for your search.</div>
-      {% endif %}
     </div>
+  </nav>
 
-  </body>
+  <div class="container mt-4">
+    <h1>Betfair API Interaction</h1>
+    <p>Here you will be able to interact with the Betfair API.</p>
+
+    <form method="POST" action="/" class="mb-4">
+      <div class="input-group">
+        <select class="form-select" name="event_type_id" style="max-width: 200px;">
+          {% for type in event_types %}
+          <option value="{{ type.id }}" {% if type.id==current_event_type_id %}selected{% endif %}>{{ type.name }}
+          </option>
+          {% endfor %}
+        </select>
+
+
+        <input type="text" class="form-control" name="search_term" placeholder="Enter team/player name (e.g., Arsenal)"
+          required>
+        <button class="btn btn-primary" type="submit">Search</button>
+
+      </div>
+    </form>
+
+
+    {% if results %}
+    <h2>Search Results</h2>
+    <table class="table table-striped table-hover">
+      <thead>
+        <tr>
+          <th>Event Name</th>
+          <th>Date</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for event in results %}
+        <tr>
+          <td>{{ event.event.name }}</td>
+          <td>{{ event.event.openDate }}</td>
+          <td>
+            <a href="/event/{{ event.event.id }}" class="btn btn-sm btn-info">View Details</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% elif request.method == 'POST' and not results %}
+    <div class="alert alert-warning">No events found for your search.</div>
+    {% endif %}
+  </div>
+
+</body>
+
 </html>
