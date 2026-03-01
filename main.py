@@ -22,12 +22,57 @@ except ImportError:
     BETFAIR_PASSWORD = None
     BETFAIR_API_KEY = None
 
+# Global session cache
+_current_session_token = None
+_last_session_time = None
+SESSION_TIMEOUT_MINUTES = 15  # Keep-alive interval
+
 def get_session():
+    """
+    Returns a valid session token.
+    Uses cached token if available and fresh (or refreshed via keep-alive).
+    Otherwise performs full login.
+    """
+    global _current_session_token, _last_session_time
+
     if not BETFAIR_USERNAME:
         return None
-    return login.login(BETFAIR_USERNAME, BETFAIR_PASSWORD, BETFAIR_API_KEY, config.CERT_PATH + "/client-2048.crt", config.CERT_PATH + "/client-2048.key")
+
+    now = datetime.datetime.now()
+
+    # Case 1: No token cached -> Full Login
+    if _current_session_token is None:
+        token = login.login(BETFAIR_USERNAME, BETFAIR_PASSWORD, BETFAIR_API_KEY, config.CERT_PATH + "/client-2048.crt", config.CERT_PATH + "/client-2048.key")
+        if token:
+            _current_session_token = token
+            _last_session_time = now
+        return _current_session_token
+
+    # Case 2: Token cached, check if refresh needed
+    if _last_session_time and (now - _last_session_time).total_seconds() > (SESSION_TIMEOUT_MINUTES * 60):
+        print(f"Session older than {SESSION_TIMEOUT_MINUTES} minutes. Attempting keep-alive...")
+        new_token = login.keep_alive(_current_session_token, BETFAIR_API_KEY)
+        
+        if new_token:
+            _current_session_token = new_token
+            _last_session_time = now
+            return _current_session_token
+        else:
+            print("Keep-alive failed. Re-logging in...")
+            # Keep-alive failed (session expired?), try full login
+            token = login.login(BETFAIR_USERNAME, BETFAIR_PASSWORD, BETFAIR_API_KEY, config.CERT_PATH + "/client-2048.crt", config.CERT_PATH + "/client-2048.key")
+            if token:
+                _current_session_token = token
+                _last_session_time = now
+            else:
+                _current_session_token = None # Clear invalid token
+            return _current_session_token
+
+    # Case 3: Token cached and fresh
+    return _current_session_token
 
 if __name__ == "__main__":
+
     if not BETFAIR_USERNAME:
         print("Error: A config_secrets.py file with your Betfair credentials is required.")
         sys.exit(1)
