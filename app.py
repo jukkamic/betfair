@@ -58,16 +58,36 @@ def event_details(event_id):
             market_id = catalogue['marketId']
             runners = {runner['selectionId']: runner['runnerName'] for runner in catalogue['runners']}
             
-            # Get odds
+                        # Get odds
             odds = markets.get_market_odds(session_token, main.BETFAIR_API_KEY, market_id)
             
+            # Calculate implied percentages
+            total_implied_probability = 0
+            runner_probabilities = {}
+            
+            if odds:
+                for book in odds:
+                    for runner in book.get('runners', []):
+                        # Use the best available back price
+                        back_prices = runner.get('ex', {}).get('availableToBack', [])
+                        if back_prices:
+                            best_back_price = back_prices[0]['price']
+                            implied_prob = (1 / best_back_price) * 100
+                            runner_probabilities[runner['selectionId']] = round(implied_prob, 2)
+                            total_implied_probability += implied_prob
+                        else:
+                            runner_probabilities[runner['selectionId']] = 0
+
             market_data = {
                 'market_name': catalogue['marketName'],
                 'runners': runners,
-                'odds': odds
+                'odds': odds,
+                'runner_probabilities': runner_probabilities,
+                'total_implied_probability': round(total_implied_probability, 2)
             }
             
     return render_template('event_details.html', event_id=event_id, market=market_data)
+
 
 
 @app.route('/logout')

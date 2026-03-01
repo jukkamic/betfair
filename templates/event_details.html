@@ -19,24 +19,33 @@
       {% if market %}
         <h1>{{ market.market_name }}</h1>
         <p>Event ID: {{ event_id }}</p>
+        <div class="alert alert-info">
+          Total Implied Probability: <strong>{{ market.total_implied_probability }}%</strong>
+        </div>
         
         <div class="row">
           {% for book in market.odds %}
             {% for runner in book.runners %}
               {% set runner_name = market.runners.get(runner.selectionId, 'Unknown Runner') %}
+              {% set prob = market.runner_probabilities.get(runner.selectionId, 0) %}
               
               <div class="col-md-6 mb-4">
                 <div class="card">
-                  <div class="card-header">
+                  <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">{{ runner_name }}</h5>
+                    <span class="badge bg-secondary">{{ prob }}%</span>
                   </div>
                   <div class="card-body">
                     <div class="row text-center">
                       <div class="col-6">
                         <h6 class="text-primary">Back</h6>
                         {% if runner.ex.availableToBack %}
-                          <span class="badge bg-primary fs-5">{{ runner.ex.availableToBack[0].price }}</span>
-                          <br><small>Size: {{ runner.ex.availableToBack[0].size }}</small>
+                          {% for back in runner.ex.availableToBack %}
+                            <div class="mb-2">
+                              <span class="badge bg-primary fs-5">{{ back.price }}</span>
+                              <br><small>Size: {{ back.size }}</small>
+                            </div>
+                          {% endfor %}
                         {% else %}
                           <span class="text-muted">N/A</span>
                         {% endif %}
@@ -44,8 +53,12 @@
                       <div class="col-6">
                         <h6 class="text-danger">Lay</h6>
                         {% if runner.ex.availableToLay %}
-                          <span class="badge bg-danger fs-5">{{ runner.ex.availableToLay[0].price }}</span>
-                          <br><small>Size: {{ runner.ex.availableToLay[0].size }}</small>
+                          {% for lay in runner.ex.availableToLay %}
+                            <div class="mb-2">
+                              <span class="badge bg-danger fs-5">{{ lay.price }}</span>
+                              <br><small>Size: {{ lay.size }}</small>
+                            </div>
+                          {% endfor %}
                         {% else %}
                           <span class="text-muted">N/A</span>
                         {% endif %}
