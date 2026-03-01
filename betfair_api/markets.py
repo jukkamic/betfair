@@ -39,16 +39,16 @@ def call_api(session_token, api_key, method, params):
         return None
 
 
-def find_football_event(session_token, api_key, team_a, team_b):
+def find_football_events(session_token, api_key, text_query):
     """
-    Finds a football event by the names of the two teams.
+    Finds football events based on a text query.
     """
-    print(f"Searching for event: {team_a} vs {team_b}")
+    print(f"Searching for events matching: {text_query}")
     event_filter = {
         "filter": {
             "eventTypeIds": ["1"],  # 1 is the ID for Soccer
-            "marketCountries": ["DE"], # Germany
-            "textQuery": f"{team_a}*{team_b}",
+            "marketCountries": ["DE"], # Removed to allow broader search
+            "textQuery": text_query,
             "marketStartTime": {
                 "from": (datetime.datetime.utcnow()).strftime("%Y-%m-%dT%H:%M:%SZ")
             }
@@ -59,11 +59,10 @@ def find_football_event(session_token, api_key, team_a, team_b):
     
     if events and len(events) > 0:
         print(f"Found {len(events)} matching event(s).")
-        # Assuming the first result is the correct one
-        return events[0]
+        return events
     else:
-        print("Could not find the specified event.")
-        return None
+        print("No events found.")
+        return []
 
 
 def get_market_catalogue(session_token, api_key, event_id):

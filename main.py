@@ -26,12 +26,28 @@ if __name__ == "__main__":
     
     if session_token:
         # 2. Find the event
-        event = markets.find_football_event(session_token, BETFAIR_API_KEY, "Eintracht Frankfurt", "SC Freiburg")
+        team_name = input("Enter team name to search: ")
+        events = markets.find_football_events(session_token, BETFAIR_API_KEY, team_name)
         
-        if event:
-            event_id = event['event']['id']
-            event_name = event['event']['name']
-            print(f"Found Event: {event_name} with ID: {event_id}")
+        if events:
+            print(f"\nFound {len(events)} events:")
+            for i, event in enumerate(events):
+                print(f"{i + 1}: {event['event']['name']} ({event['event']['openDate']})")
+            
+            try:
+                choice = int(input("\nEnter the number of the event to view: "))
+                if 1 <= choice <= len(events):
+                    selected_event = events[choice - 1]
+                else:
+                    print("Invalid selection.")
+                    sys.exit(0)
+            except ValueError:
+                print("Invalid input.")
+                sys.exit(0)
+
+            event_id = selected_event['event']['id']
+            event_name = selected_event['event']['name']
+            print(f"\nSelected Event: {event_name} with ID: {event_id}")
 
             # 3. Get the market for the event (Match Odds)
             market = markets.get_market_catalogue(session_token, BETFAIR_API_KEY, event_id)
