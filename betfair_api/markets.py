@@ -39,15 +39,15 @@ def call_api(session_token, api_key, method, params):
         return None
 
 
-def find_football_events(session_token, api_key, text_query):
+def find_events(session_token, api_key, text_query, event_type_id="1"):
     """
-    Finds football events based on a text query.
+    Finds events based on a text query and event type ID.
+    Default event_type_id="1" is Soccer.
     """
-    print(f"Searching for events matching: {text_query}")
+    print(f"Searching for events matching: {text_query} with type: {event_type_id}")
     event_filter = {
         "filter": {
-            "eventTypeIds": ["1"],  # 1 is the ID for Soccer
-            "marketCountries": ["DE"], # Removed to allow broader search
+            "eventTypeIds": [str(event_type_id)],
             "textQuery": text_query,
             "marketStartTime": {
                 "from": (datetime.datetime.utcnow()).strftime("%Y-%m-%dT%H:%M:%SZ")
@@ -56,6 +56,7 @@ def find_football_events(session_token, api_key, text_query):
     }
     
     events = call_api(session_token, api_key, "SportsAPING/v1.0/listEvents", event_filter)
+
     
     if events and len(events) > 0:
         print(f"Found {len(events)} matching event(s).")
@@ -74,7 +75,7 @@ def get_market_catalogue(session_token, api_key, event_id):
     market_filter = {
         "filter": {
             "eventIds": [event_id],
-            "marketTypeCodes": ["MATCH_ODDS"]
+            "marketTypeCodes": ["RT_MATCH_ODDS","MATCH_ODDS"]
         },
         "maxResults": "1",
         "marketProjection": ["RUNNER_DESCRIPTION"]

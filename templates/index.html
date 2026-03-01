@@ -24,12 +24,19 @@
             <h1>Betfair API Interaction</h1>
       <p>Here you will be able to interact with the Betfair API.</p>
       
-      <form method="POST" action="/" class="mb-4">
+            <form method="POST" action="/" class="mb-4">
         <div class="input-group">
-          <input type="text" class="form-control" name="search_term" placeholder="Enter team name (e.g., Arsenal)" required>
+                    <select class="form-select" name="event_type_id" style="max-width: 200px;">
+            {% for type in event_types %}
+              <option value="{{ type.id }}" {% if type.id == "1" %}selected{% endif %}>{{ type.name }}</option>
+            {% endfor %}
+          </select>
+          <input type="text" class="form-control" name="search_term" placeholder="Enter team/player name (e.g., Arsenal)" required>
           <button class="btn btn-primary" type="submit">Search</button>
+
         </div>
       </form>
+
 
             {% if results %}
         <h2>Search Results</h2>
