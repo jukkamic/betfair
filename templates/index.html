@@ -28,12 +28,12 @@
 
     <form method="POST" action="/" class="mb-4">
       <div class="input-group">
-        <select class="form-select" name="event_type_id" style="max-width: 200px;">
-          {% for type in event_types %}
-          <option value="{{ type.id }}" {% if type.id==current_event_type_id %}selected{% endif %}>{{ type.name }}
-          </option>
-          {% endfor %}
-        </select>
+                  <select class="form-select" name="event_type_id" style="max-width: 200px;">
+            {% for type in event_types %}
+              <option value="{{ type.id }}" {{ 'selected' if type.id == current_event_type_id else '' }}>{{ type.name }}</option>
+            {% endfor %}
+          </select>
+
 
 
         <input type="text" class="form-control" name="search_term" placeholder="Enter team/player name (e.g., Arsenal)"
