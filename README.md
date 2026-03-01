@@ -16,7 +16,13 @@ This project contains a Python script for interacting with the Betfair Exchange 
     cd <repository_name>
     ```
 
-2.  **Install dependencies:**
+2. **Create Python virtual environment**
+    ```bash
+    python -m venv venv
+    source venv/Scripts/activate
+    ```
+   
+3.  **Install dependencies:**
     ```bash
     pip install -r requirements.txt
     ```
