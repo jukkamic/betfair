@@ -54,17 +54,18 @@
           <th>Action</th>
         </tr>
       </thead>
-      <tbody>
-        {% for event in results %}
-        <tr>
-          <td>{{ event.event.name }}</td>
-          <td>{{ event.event.openDate }}</td>
-          <td>
-            <a href="/event/{{ event.event.id }}" class="btn btn-sm btn-info">View Details</a>
-          </td>
-        </tr>
-        {% endfor %}
-      </tbody>
+                <tbody>
+            {% for event in results %}
+              <tr>
+                <td>{{ event.event.name }}</td>
+                <td>{{ event.event.openDate | datetimeformat }}</td>
+                <td>
+                  <a href="/event/{{ event.event.id }}" class="btn btn-sm btn-info">View Details</a>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+
     </table>
     {% elif request.method == 'POST' and not results %}
     <div class="alert alert-warning">No events found for your search.</div>

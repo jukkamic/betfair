@@ -5,6 +5,9 @@ from models import db, User
 from views.auth import auth_bp
 from views.main import main_bp
 from views.admin import MyModelView, MyAdminIndexView
+from datetime import datetime
+from zoneinfo import ZoneInfo
+import dateutil.parser
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'  # Change this to a random secret key
@@ -26,6 +29,29 @@ def load_user(user_id):
 # Register Blueprints
 app.register_blueprint(auth_bp)
 app.register_blueprint(main_bp)
+
+# Filters
+@app.template_filter('datetimeformat')
+def datetimeformat_filter(value):
+    if not value:
+        return ""
+    try:
+        # Betfair returns ISO 8601 strings (e.g., 2026-03-01T14:30:00.000Z)
+        dt = dateutil.parser.parse(value)
+        
+        # Convert to Helsinki time
+        # Ensure the parsed datetime is timezone-aware (it usually is if 'Z' is present)
+        # If not, assume UTC first
+        if dt.tzinfo is None:
+            dt = dt.replace(tzinfo=ZoneInfo("UTC"))
+            
+        local_dt = dt.astimezone(ZoneInfo("Europe/Helsinki"))
+        
+        # Format to Finnish style: dd.mm.yyyy HH:MM
+        return local_dt.strftime('%d.%m.%Y %H:%M')
+    except Exception as e:
+        print(f"Error formatting date: {e}")
+        return value
 
 # Admin
 admin = Admin(app, name='Betfair Admin', index_view=MyAdminIndexView())
