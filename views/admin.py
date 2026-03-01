@@ -13,8 +13,8 @@ class MyModelView(ModelView):
 
     def on_model_change(self, form, model, is_created):
         # Hash the password when creating or updating a user via admin
-        if form.password.data:
-             model.password = generate_password_hash(form.password.data, method='scrypt')
+        if form.password.data: # type: ignore
+             model.password = generate_password_hash(form.password.data, method='scrypt') # type: ignore
 
 class MyAdminIndexView(AdminIndexView):
     def is_accessible(self):

@@ -14,7 +14,7 @@ def login():
 
         user = db.session.execute(db.select(User).filter_by(username=username)).scalar_one_or_none()
 
-        if not user or not check_password_hash(user.password, password):
+        if not user or not check_password_hash(user.password, password): # type: ignore
             flash('Please check your login details and try again.')
             return redirect(url_for('auth.login'))
 
