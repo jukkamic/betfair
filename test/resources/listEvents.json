@@ -1,0 +1,75 @@
+[
+    [
+        {
+            "jsonrpc": "2.0",
+            "result": [
+                {
+                    "event": {
+                        "id": "35300700",
+                        "name": "Columbus Blue Jackets @ New York Rangers",
+                        "countryCode": "GB",
+                        "timezone": "GMT",
+                        "openDate": "2026-03-03T00:10:00.000Z"
+                    },
+                    "marketCount": 4
+                }
+            ],
+            "id": 1
+        }
+    ],
+    [
+        {
+            "jsonrpc": "2.0",
+            "result": [
+                {
+                    "event": {
+                        "id": "35300701",
+                        "name": "Detroit Red Wings @ Nashville Predators",
+                        "countryCode": "GB",
+                        "timezone": "GMT",
+                        "openDate": "2026-03-02T19:10:00.000Z"
+                    },
+                    "marketCount": 4
+                }
+            ],
+            "id": 1
+        }
+    ],
+    [
+        {
+            "jsonrpc": "2.0",
+            "result": [
+                {
+                    "event": {
+                        "id": "35296840",
+                        "name": "Freiburg v Leverkusen",
+                        "countryCode": "DE",
+                        "timezone": "GMT",
+                        "openDate": "2026-03-07T14:30:00.000Z"
+                    },
+                    "marketCount": 7
+                },
+                {
+                    "event": {
+                        "id": "35314607",
+                        "name": "Genk v Freiburg",
+                        "timezone": "GMT",
+                        "openDate": "2026-03-12T20:00:00.000Z"
+                    },
+                    "marketCount": 8
+                },
+                {
+                    "event": {
+                        "id": "35323232",
+                        "name": "Freiburg v Union Berlin",
+                        "countryCode": "DE",
+                        "timezone": "GMT",
+                        "openDate": "2026-03-15T16:30:00.000Z"
+                    },
+                    "marketCount": 7
+                }
+            ],
+            "id": 1
+        }
+    ]
+]
