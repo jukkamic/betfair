@@ -2,13 +2,16 @@
 
 This project contains a Python script for interacting with the Betfair Exchange API and a simple Flask web application. It allows you to search for football events, view markets, and see current odds.
 
-## Prerequisites
+
+# Setup & Installation
+
+## Option 1: Local Installation (Standard)
+
+### Prerequisites
 
 - Python 3.x
 - A Betfair account
 - Betfair API Application Key
-
-## Setup & Installation
 
 1.  **Clone the repository:**
     ```bash
@@ -26,6 +29,26 @@ This project contains a Python script for interacting with the Betfair Exchange 
     ```bash
     pip install -r requirements.txt
     ```
+
+## Option 2: VS Code Dev Container (Recommended)
+
+
+### Prerequisites
+- Docker Desktop
+- Visual Studio Code
+- Dev Containers Extension (VS Code will usually prompt you to install this)
+
+1.  **Clone the repository:**
+    ```bash
+    git clone <repository_url>
+    cd <repository_name>
+    code .
+    ```
+
+VS Code will detect the .devcontainer folder and show a notification asking to "Reopen in Container". Click it.
+*Alternatively, press F1 and select "Dev Containers: Reopen in Container".*
+Done! VS Code will build the container and automatically install the dependencies listed in requirements.txt. You are now ready to code.
+
 
 ## Configuration
 
