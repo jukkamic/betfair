@@ -1,6 +1,6 @@
 import requests
 import datetime
-import config
+import config 
 
 def call_api(session_token, api_key, method, params):
     """
@@ -55,7 +55,7 @@ def find_events(session_token, api_key, text_query, event_type_id="1"):
         }
     }
     
-    events = call_api(session_token, api_key, "SportsAPING/v1.0/listEvents", event_filter)
+    events = call_api(session_token, api_key, config.LIST_EVENTS, event_filter)
 
     
     if events and len(events) > 0:
@@ -81,7 +81,7 @@ def get_market_catalogue(session_token, api_key, event_id):
         "marketProjection": ["RUNNER_DESCRIPTION"]
     }
     
-    markets = call_api(session_token, api_key, "SportsAPING/v1.0/listMarketCatalogue", market_filter)
+    markets = call_api(session_token, api_key, config.LIST_MARKET_CATALOGUE, market_filter)
     
     if markets and len(markets) > 0:
         print("Found 'Match Odds' market.")
@@ -102,5 +102,5 @@ def get_market_odds(session_token, api_key, market_id):
         }
     }
 
-    odds = call_api(session_token, api_key, "SportsAPING/v1.0/listMarketBook", market_book_params)
+    odds = call_api(session_token, api_key, config.LIST_MARKET_BOOK, market_book_params)
     return odds
