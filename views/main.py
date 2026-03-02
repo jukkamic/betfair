@@ -1,7 +1,7 @@
-from flask import Blueprint, render_template, request, redirect, url_for, session
+from flask import Blueprint, render_template, request, redirect, url_for, session, current_app
 from flask_login import login_required, current_user
 import main
-import betfair_api.markets as markets
+import betfair_api
 from betfair_api.resources.event_types import EVENT_TYPES
 
 main_bp = Blueprint('main', __name__)
@@ -24,6 +24,12 @@ if EVENT_TYPES and 'result' in EVENT_TYPES[0]:
 def index():
     search_results = []
     
+    # Get the markets service (real or mock based on TEST_MODE)
+    markets = betfair_api.get_markets_service(current_app)
+    
+    # Check if in test mode
+    test_mode = current_app.config.get('TEST_MODE', False)
+    
     # Get the current event type from session, default to "1" (Soccer)
     current_event_type_id = session.get('selected_event_type_id', "1")
 
@@ -44,11 +50,17 @@ def index():
                 except Exception as e:
                     print(f"Error searching events: {e}")
                     
-    return render_template('index.html', name=current_user.name, results=search_results, event_types=PROCESSED_EVENT_TYPES, current_event_type_id=current_event_type_id)
+    return render_template('index.html', name=current_user.name, results=search_results, event_types=PROCESSED_EVENT_TYPES, current_event_type_id=current_event_type_id, test_mode=test_mode)
 
 @main_bp.route('/event/<event_id>')
 @login_required
 def event_details(event_id):
+    # Get the markets service (real or mock based on TEST_MODE)
+    markets = betfair_api.get_markets_service(current_app)
+    
+    # Check if in test mode
+    test_mode = current_app.config.get('TEST_MODE', False)
+    
     session_token = main.get_session()
     market_data = {}
     
@@ -83,4 +95,4 @@ def event_details(event_id):
                 'total_implied_probability': round(total_implied_probability, 2)
             }
             
-    return render_template('event_details.html', event_id=event_id, market=market_data)
+    return render_template('event_details.html', event_id=event_id, market=market_data, test_mode=test_mode)

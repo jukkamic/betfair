@@ -13,6 +13,13 @@
       </div>
     </nav>
 
+    {% if test_mode %}
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+      <strong>🧪 TEST MODE ACTIVE</strong> - Using mock Betfair API services.
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endif %}
+
     <div class="container mt-4">
       <a href="/" class="btn btn-outline-secondary mb-3">&larr; Back to Search</a>
       

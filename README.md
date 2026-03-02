@@ -52,6 +52,15 @@ Done! VS Code will build the container and automatically install the dependencie
 
 ## Configuration
 
+### Test mode
+The project may be run in test mode without the need for the following credentials setup procedures.
+
+```bash
+python app.py --test
+```
+
+### Live mode
+
 ### 1. Credentials (`config_secrets.py`)
 
 You need to create a file named `config_secrets.py` in the root directory of the project to store your Betfair credentials. This file is excluded from version control for security.
@@ -101,7 +110,7 @@ This project uses the **Non-Interactive (Bot) Login** method, which requires SSL
 4.  **Upload Certificate to Betfair:**
     Make sure you have uploaded the public certificate (`client-2048.crt`) to your Betfair account via "My Security" -> "Automated Access" (or as described in the documentation linked above).
 
-## AI Configuration
+## AI Configuration for developers
 Here's a config.yaml for Continue extension with your z.ai agent
 
 ```

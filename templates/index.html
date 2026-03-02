@@ -20,7 +20,15 @@
         <a href="/logout" class="btn btn-outline-primary">Logout</a>
       </div>
     </div>
-  </nav>
+    </nav>
+
+  {% if test_mode %}
+  <div class="alert alert-warning alert-dismissible fade show" role="alert">
+    <strong>🧪 TEST MODE ACTIVE</strong> - Using mock Betfair API services.<br>
+    <small>Only searches for <strong>detroit</strong> or <strong>freiburg</strong> will return results.</small>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+  {% endif %}
 
   <div class="container mt-4">
     <h1>Betfair API Interaction</h1>

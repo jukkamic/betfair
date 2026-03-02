@@ -104,3 +104,11 @@ def get_market_odds(session_token, api_key, market_id):
 
     odds = call_api(session_token, api_key, config.LIST_MARKET_BOOK, market_book_params)
     return odds
+
+
+def find_football_events(session_token, api_key, text_query):
+    """
+    Convenience function to find football/soccer events.
+    Default event type ID is "1" for soccer.
+    """
+    return find_events(session_token, api_key, text_query, event_type_id="1")

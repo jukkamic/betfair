@@ -8,12 +8,30 @@ from views.admin import MyModelView, MyAdminIndexView
 from datetime import datetime
 from zoneinfo import ZoneInfo
 import dateutil.parser
+import argparse
+import sys
+
+# Parse command-line arguments
+parser = argparse.ArgumentParser(description='Run Betfair App')
+parser.add_argument('--test', action='store_true', help='Run in test mode (use mock API)')
+args = parser.parse_args()
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'  # Change this to a random secret key
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['FLASK_ADMIN_SWATCH'] = 'cerulean'
+app.config['TEST_MODE'] = args.test
+
+# Log test mode status
+if app.config['TEST_MODE']:
+    print("=" * 50)
+    print("RUNNING IN TEST MODE - Using mock Betfair API services")
+    print("=" * 50)
+else:
+    print("=" * 50)
+    print("RUNNING IN NORMAL MODE - Using real Betfair API")
+    print("=" * 50)
 
 # Initialize Extensions
 db.init_app(app)

@@ -4,6 +4,8 @@ import sys
 import betfair_api.login as login
 import config
 import betfair_api.markets as markets
+import betfair_api
+from flask import current_app
 
 # --- Configuration ---
 # It's recommended to load these from a secure config file or environment variables
@@ -27,6 +29,19 @@ _current_session_token = None
 _last_session_time = None
 SESSION_TIMEOUT_MINUTES = 15  # Keep-alive interval
 
+def _get_login_service():
+    """Get the login service (real or mock) based on Flask app config."""
+    try:
+        # Check if we're in a Flask app context
+        if current_app:
+            return betfair_api.get_login_service(current_app)
+    except RuntimeError:
+        # No Flask app context (e.g., running as standalone script)
+        pass
+    # Fall back to real login service
+    return login
+
+
 def get_session():
     """
     Returns a valid session token.
@@ -35,6 +50,8 @@ def get_session():
     """
     global _current_session_token, _last_session_time
 
+    login_service = _get_login_service()
+    
     if not BETFAIR_USERNAME:
         return None
 
@@ -42,7 +59,7 @@ def get_session():
 
     # Case 1: No token cached -> Full Login
     if _current_session_token is None:
-        token = login.login(BETFAIR_USERNAME, BETFAIR_PASSWORD, BETFAIR_API_KEY, config.CERT_PATH + "/client-2048.crt", config.CERT_PATH + "/client-2048.key")
+        token = login_service.login(BETFAIR_USERNAME, BETFAIR_PASSWORD, BETFAIR_API_KEY, config.CERT_PATH + "/client-2048.crt", config.CERT_PATH + "/client-2048.key")
         if token:
             _current_session_token = token
             _last_session_time = now
@@ -51,7 +68,7 @@ def get_session():
     # Case 2: Token cached, check if refresh needed
     if _last_session_time and (now - _last_session_time).total_seconds() > (SESSION_TIMEOUT_MINUTES * 60):
         print(f"Session older than {SESSION_TIMEOUT_MINUTES} minutes. Attempting keep-alive...")
-        new_token = login.keep_alive(_current_session_token, BETFAIR_API_KEY)
+        new_token = login_service.keep_alive(_current_session_token, BETFAIR_API_KEY)
         
         if new_token:
             _current_session_token = new_token
@@ -60,7 +77,7 @@ def get_session():
         else:
             print("Keep-alive failed. Re-logging in...")
             # Keep-alive failed (session expired?), try full login
-            token = login.login(BETFAIR_USERNAME, BETFAIR_PASSWORD, BETFAIR_API_KEY, config.CERT_PATH + "/client-2048.crt", config.CERT_PATH + "/client-2048.key")
+            token = login_service.login(BETFAIR_USERNAME, BETFAIR_PASSWORD, BETFAIR_API_KEY, config.CERT_PATH + "/client-2048.crt", config.CERT_PATH + "/client-2048.key")
             if token:
                 _current_session_token = token
                 _last_session_time = now
