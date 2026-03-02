@@ -2,6 +2,15 @@
 
 This project contains a Python script for interacting with the Betfair Exchange API and a simple Flask web application. It allows you to search for football events, view markets, and see current odds.
 
+## Development Environment
+
+This project is optimized for **Visual Studio Code Dev Containers** with the **Continue extension** for AI-assisted development.
+
+- **VS Code Dev Containers**: Provides a consistent, isolated development environment with all dependencies pre-configured
+- **Continue Extension**: Enables AI-powered coding assistance for faster development and code review
+- See the [AI Configuration](#ai-configuration-for-developers) section below for setup instructions
+
+---
 
 # Setup & Installation
 
@@ -136,6 +145,12 @@ To run the interactive CLI script which logs in and lets you search for markets:
 
 ```bash
 python main.py
+```
+
+or, in test mode with mock services:
+
+```bash
+python main.py --test
 ```
 
 Follow the prompts to search for a team (e.g., "Arsenal"), select an event, and view the market odds.
