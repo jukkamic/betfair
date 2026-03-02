@@ -74,11 +74,17 @@ This project uses the **Non-Interactive (Bot) Login** method, which requires SSL
     Follow the official Betfair documentation to generate your self-signed certificates:
     [Betfair Non-Interactive Bot Login Documentation](https://betfair-developer-docs.atlassian.net/wiki/spaces/1smk3cen4v3lu3yomq5qye0ni/pages/2687915/Non-Interactive+bot+login)
 
-2.  **Place Certificates in the project:**
+2. **Some copy-pasteable commands when running in dev container:**
+    1. openssl genrsa -out client-2048.key 2048
+    2. You will have to edit /usr/lib/ssl/openssl.cnf according to docs linked above. Append the required section to end.
+    3. openssl req -new -config /usr/lib/ssl/openssl.cnf -key client-2048.key -out client-2048.csr
+    4. openssl x509 -req -days 365 -in client-2048.csr -signkey client-2048.key -out client-2048.crt -extfile /usr/lib/ssl/openssl.cnf -extensions ssl_client
+
+3.  **Place Certificates in the project:**
     - Create a folder named `ssl` in the root directory.
     - Place your generated `client-2048.crt` and `client-2048.key` files inside this `ssl` folder.
 
-    *Note: The path `ssl` is defined in `config.py`.*
+    *Note: The path `ssl` is defined in `config.py`. and `.gitignore`* 
 
     Directory structure should look like this:
     ```
@@ -92,7 +98,7 @@ This project uses the **Non-Interactive (Bot) Login** method, which requires SSL
     └── ...
     ```
 
-3.  **Upload Certificate to Betfair:**
+4.  **Upload Certificate to Betfair:**
     Make sure you have uploaded the public certificate (`client-2048.crt`) to your Betfair account via "My Security" -> "Automated Access" (or as described in the documentation linked above).
 
 ## Usage
